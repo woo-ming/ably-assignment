@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  mysql:
+    container_name: ably_mysql
+    platform: linux/x86_64
+    image: mysql:8.0.29
+    ports:
+      - '33062:3306'
+    environment:
+      - MYSQL_DATABASE=ably
+      - MYSQL_ROOT_PASSWORD=ably_password
+      - MYSQL_USER=ably
+      - MYSQL_PASSWORD=ably_password
+    command:
+      - --character-set-server=utf8mb4
+    volumes:
+      - ./.mysql/conf.d:/etc/mysql/conf.d
+      - ./.mysql/data:/var/lib/mysql
+
+  redis:
+    container_name: ably_redis
+    image: redis:7.0.0
+    command: redis-server --port 6379
+    hostname: redis_local
+    labels:
+      - 'name=redis_local'
+      - 'mode=standalone'
+    ports:
+      - 6379:6379
+    volumes:
+      - ./.redis/data:/var/lib/redis
