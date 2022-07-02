@@ -21,19 +21,6 @@ const baseOption: DataSourceOptions = {
 };
 
 export default registerAs('database', (): DataSourceOptions => {
-  Logger.debug(
-    `database.config.ts EntityPath: ${join(
-      __dirname,
-      '../../**/*.entity{.ts,.js}',
-    )}`,
-  );
-  Logger.debug(
-    `database.config.ts MigrationPath: ${join(
-      __dirname,
-      '../../**/*-migration.{.ts,.js}',
-    )}`,
-  );
-
   return {
     ...baseOption,
     host: DATABASE_HOST,
