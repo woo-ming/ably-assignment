@@ -3,7 +3,6 @@ import { registerAs } from '@nestjs/config';
 import { DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { join } from 'path';
-import { Logger } from '@nestjs/common';
 
 const {
   DATABASE_HOST,
@@ -16,8 +15,8 @@ const {
 const baseOption: DataSourceOptions = {
   type: 'mysql',
   namingStrategy: new SnakeNamingStrategy(),
-  entities: [join(__dirname, '../../../**/*.entity{.ts,.js}')],
-  migrations: [join(__dirname, '../../../**/*-migration{.ts,.js}')],
+  entities: [join(__dirname, '../../**/*.entity{.ts,.js}')],
+  migrations: [join(__dirname, '../../**/*.migration{.ts,.js}')],
 };
 
 export default registerAs('database', (): DataSourceOptions => {
