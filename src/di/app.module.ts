@@ -3,10 +3,12 @@ import { AppController } from 'src/interface/app/app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from 'src/common/configuration/env.validation';
 import databaseConfig from 'src/common/configuration/database.config';
-import { DataSource } from 'typeorm';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import type { RedisClientOptions } from 'redis';
 import cacheConfig from 'src/common/configuration/cache.config';
+import { UserPersistenceModule } from 'src/infrastructure/persistence/di/user.module';
+import { async } from 'rxjs';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
   imports: [
@@ -18,8 +20,12 @@ import cacheConfig from 'src/common/configuration/cache.config';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) =>
-        configService.get('database') as TypeOrmModuleOptions,
+      useFactory: (configService: ConfigService) =>
+        configService.get('database') as DataSourceOptions,
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        const dataSource = await new DataSource(options).initialize();
+        return dataSource;
+      },
     }),
     CacheModule.registerAsync({
       imports: [ConfigModule],
@@ -27,9 +33,8 @@ import cacheConfig from 'src/common/configuration/cache.config';
       useFactory: async (configService: ConfigService) =>
         configService.get('cache') as RedisClientOptions,
     }),
+    UserPersistenceModule,
   ],
   controllers: [AppController],
 })
-export class AppModule {
-  constructor(private dataSource: DataSource) {}
-}
+export class AppModule {}
