@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import type { RedisClientOptions } from 'redis';
 import cacheConfig from 'src/common/configuration/cache.config';
 import { UserPersistenceModule } from 'src/infrastructure/persistence/di/user.module';
-import { async } from 'rxjs';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 @Module({
@@ -30,6 +29,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
     CacheModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+      isGlobal: true,
       useFactory: async (configService: ConfigService) =>
         configService.get('cache') as RedisClientOptions,
     }),

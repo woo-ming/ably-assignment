@@ -1,12 +1,13 @@
-import { Provider } from '@nestjs/common';
+import { Injectable, Provider } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDITokens } from '../di/user-di-tokens';
 import { UserReader } from '../repository/user.reader';
 import { UserStore } from '../repository/user.store';
-import { User } from '../user';
 import { UserServiceImpl } from './user.service';
 import { UserAlreadyExistsException } from '../../../common/exception/user-exception';
+import { User } from '../entity/user';
 
+@Injectable()
 class UserMemoryRepository implements UserStore, UserReader {
   private users: User[] = [
     new User({
@@ -36,7 +37,6 @@ class UserMemoryRepository implements UserStore, UserReader {
   }
 
   async findById(id: string): Promise<User> {
-    console.log(this.users);
     return this.users.filter((user) => user.id === id)[0];
   }
 }
@@ -97,5 +97,24 @@ describe('UserServiceImpl', () => {
       //then
       expect(error).toBeInstanceOf(UserAlreadyExistsException);
     });
+  });
+
+  it('retrieve user by id', async () => {
+    // given
+    const command = {
+      name: '이름',
+      nickname: '닉네임',
+      email: '이메일2@도메인.com',
+      phone: '010-1234-5679',
+      password: '비밀번호',
+    };
+    const user = await service.registerUser(command);
+
+    // when
+    const result = await service.retrieveUserByEmailOrPhone({
+      emailOrPhone: user.email,
+    });
+    // then
+    expect(result.id).toBe(user.id);
   });
 });

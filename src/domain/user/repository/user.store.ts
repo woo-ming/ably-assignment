@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../entity/user';
 
 export interface UserStore {
   store(user: User): Promise<User>;

@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../entity/user';
 
 export class UserMainInfo {
   id: string;
