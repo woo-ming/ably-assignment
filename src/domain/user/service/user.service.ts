@@ -11,7 +11,7 @@ import { EntityNotFoundExceptionMessage } from '../exception/error-message';
 import { EntityNotFoundException } from '../../../common/exception/exception';
 import { UserReader } from '../repository/user.reader';
 import { UserStore } from '../repository/user.store';
-import { User } from '../user';
+import { User } from '../entity/user';
 
 export interface UserService {
   registerUser(command: RegisterUserCommand): Promise<UserMainInfo>;

@@ -1,4 +1,4 @@
-import { User } from '../user';
+import { User } from '../entity/user';
 
 export interface UserReader {
   findById(id: string): Promise<User>;
