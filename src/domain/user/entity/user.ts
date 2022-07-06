@@ -50,7 +50,7 @@ export class User {
     return bcrypt.compareSync(password, this.password);
   }
 
-  updatePassword(password: string): void {
+  modifyPassword(password: string): void {
     this.password = this.hashPassword(password);
   }
 }

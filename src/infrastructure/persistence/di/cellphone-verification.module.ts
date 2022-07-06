@@ -1,4 +1,6 @@
 import { Module, Provider } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CellphoneVerificationEntity } from '../entity/cellphone-verification.entity';
 import { CellphoneVerificationReaderImpl } from '../repository/cellphone-verification/cellphone-verification.reader';
 import { CellphoneVerificationStoreImpl } from '../repository/cellphone-verification/cellphone-verification.store';
 

@@ -5,7 +5,7 @@ import {
   ModifyUserPasswordCommand,
   RegisterUserCommand,
 } from '../dto/user-command';
-import { UserEmailOrPhoneCriteria } from '../dto/user-criteria';
+import { UserCriteria, UserEmailOrPhoneCriteria } from '../dto/user-criteria';
 import { EntityNotFoundExceptionMessage } from '../exception/error-message';
 import { EntityNotFoundException } from '../../../common/exception/exception';
 import { UserReader } from '../repository/user.reader';
@@ -16,6 +16,7 @@ export interface UserService {
   registerUser(command: RegisterUserCommand): Promise<User>;
   modifyUserPassword(command: ModifyUserPasswordCommand): Promise<User>;
   retrieveUserByEmailOrPhone(criteria: UserEmailOrPhoneCriteria): Promise<User>;
+  retrieveUserById(criteria: UserCriteria): Promise<User>;
 }
 
 export class UserServiceImpl implements UserService {
@@ -25,6 +26,10 @@ export class UserServiceImpl implements UserService {
     @Inject(UserDITokens.UserStore)
     private readonly userStore: UserStore,
   ) {}
+
+  async retrieveUserById({ id }: UserCriteria): Promise<User> {
+    return await this.userReader.findById(id);
+  }
 
   async registerUser({
     email,
@@ -60,7 +65,7 @@ export class UserServiceImpl implements UserService {
         }
       });
 
-    user.updatePassword(password);
+    user.modifyPassword(password);
 
     return await this.userStore.store(user);
   }
