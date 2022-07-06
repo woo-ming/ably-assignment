@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { swaggerLoader } from './common/documentation/swagger';
 import { HttpExceptionFilter } from './common/exception/exception.filter';
 import { AppModule } from './di/app.module';
 
@@ -18,6 +19,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
+  swaggerLoader(app);
   await app.listen(+(process.env.PORT as string));
 }
 bootstrap();

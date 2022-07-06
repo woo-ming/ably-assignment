@@ -14,14 +14,10 @@ import { CellPhoneVerificationDITokens } from 'src/infrastructure/persistence/di
 import { CellphoneVerificationEntity } from 'src/infrastructure/persistence/entity/cellphone-verification.entity';
 import { CellphoneVerificationReader } from 'src/infrastructure/persistence/repository/cellphone-verification/cellphone-verification.reader';
 import { CellPhoneVerificationStore } from 'src/infrastructure/persistence/repository/cellphone-verification/cellphone-verification.store';
+import { TokenPairDto } from 'src/interface/auth/api/auth.dto';
 
 export interface JwtPayload {
   userId: string;
-}
-
-export interface TokenPairDto {
-  accessToken: string;
-  refreshToken: string;
 }
 
 @Injectable()

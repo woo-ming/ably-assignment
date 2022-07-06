@@ -68,3 +68,10 @@ export class SingInDto {
   @IsString()
   password: string;
 }
+
+export class TokenPairDto {
+  @ApiProperty()
+  accessToken: string;
+  @ApiProperty()
+  refreshToken: string;
+}
