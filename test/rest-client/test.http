@@ -1,12 +1,12 @@
 @URL = http://localhost:8000
-@AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUc3OUFRSFo5MUJWTTY5SzhBRlg5VlcwOSIsImlhdCI6MTY1NzA5Njg4MiwiZXhwIjoxNjU5Njg4ODgyLCJpc3MiOiJhYmx5LWlzc3VlciJ9.-GdE1bQZSs4_HvRT0RJ3nmLDvVXRqTiFmzManbXyRgE
+@AccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwMUc3OVZLVFRNRkYzRk5UREpTOFRRM1QxWSIsImlhdCI6MTY1NzExNDU4NiwiZXhwIjoxNjU5NzA2NTg2LCJpc3MiOiJhYmx5LWlzc3VlciJ9.oaFf6sVh4jAUNdVqGKdZZeqlq1YYeF49Bkb6FUZQFV0
 
 ###
 POST {{URL}}/api/auth/cellphone
 Content-Type: application/json; charset=utf-8
 
 {
-    "phone": "01073413577"
+    "phone": "01073413576"
 }
 
 ###
@@ -14,8 +14,8 @@ POST {{URL}}/api/auth/cellphone/verify
 Content-Type: application/json; charset=utf-8
 
 {
-    "requestId": 1,
-    "verificationCode": "426912"
+    "verificationId": 9,
+    "verificationCode": "163188"
 }
 
 ###
@@ -23,11 +23,12 @@ POST {{URL}}/api/auth/sign-up
 Content-Type: application/json; charset=utf-8
 
 {
-    "email":"test@domain.com",
+    "verificationId": 3,
+    "email":"email@domain.com",
     "password":"123123",
     "name":"에이블리",
     "nickname":"가고싶어요",
-    "phone":"01012345678"
+    "phone":"01073413576"
 }
 
 ###
@@ -44,7 +45,7 @@ POST {{URL}}/api/auth/sign-in
 Content-Type: application/json; charset=utf-8
 
 {
-    "emailOrPhone": "test@domain.com",
+    "emailOrPhone": "email@domain.com",
     "password": "123123"
 }
 
@@ -64,7 +65,8 @@ Content-Type: application/json; charset=utf-8
 Authorization: Bearer {{AccessToken}}
 
 {
-    "password": "123123"
+    "verificationId": 6,
+    "password": "321321"
 }
 
 

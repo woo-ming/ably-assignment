@@ -1,11 +1,18 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as dayjs from 'dayjs';
-import { CellphoneVerificationExceptionMessage } from 'src/common/constant/error-message';
+import {
+  CellphoneVerificationExceptionMessage,
+  UnauthorizedExceptionMessage,
+} from 'src/common/constant/error-message';
 import { EntityNotFoundException } from 'src/common/exception/exception';
 import { UserDITokens } from 'src/domain/user/di/user-di-tokens';
-import { RegisterUserCommand } from 'src/domain/user/dto/user-command';
 import { User } from 'src/domain/user/entity/user';
 import { UserService } from 'src/domain/user/service/user.service';
 import { NotificationDITokens } from 'src/infrastructure/notification/di/notification-di-tokens';
@@ -59,16 +66,16 @@ export class AuthFacade {
   }
 
   async verifyCode({
-    requestId,
+    verificationId,
     verificationCode,
   }: {
-    requestId: number;
+    verificationId: number;
     verificationCode: string;
   }) {
     const now: Date = dayjs().toDate();
     const cellphoneVerificationEntity = await this.cellphoneVerificationReader
       .retrieveCellphoneVerificationById({
-        id: requestId,
+        id: verificationId,
       })
       .catch((error: Error) => {
         if (error instanceof EntityNotFoundException) {
@@ -85,6 +92,8 @@ export class AuthFacade {
     }
 
     if (cellphoneVerificationEntity.isExpired(now)) {
+      cellphoneVerificationEntity.expire();
+      await this.cellphoneVerificationStore.store(cellphoneVerificationEntity);
       throw new BadRequestException(
         CellphoneVerificationExceptionMessage.expired,
       );
@@ -103,9 +112,33 @@ export class AuthFacade {
     );
   }
 
-  async signUp(command: RegisterUserCommand): Promise<TokenPairDto> {
-    const userEntity = await this.userService.registerUser(command);
+  async signUp(dto: {
+    verificationId: number;
+    name: string;
+    phone: string;
+    email: string;
+    nickname: string;
+    password: string;
+  }): Promise<TokenPairDto> {
+    const { verificationId, ...command } = dto;
+    const verificationEntity =
+      await this.cellphoneVerificationReader.retrieveCellphoneVerificationById({
+        id: verificationId,
+      });
 
+    if (!verificationEntity.verified)
+      throw new BadRequestException(
+        CellphoneVerificationExceptionMessage.invalid,
+      );
+    else if (verificationEntity.expired)
+      throw new BadRequestException(
+        CellphoneVerificationExceptionMessage.expired,
+      );
+
+    verificationEntity.expire();
+
+    const userEntity = await this.userService.registerUser(command);
+    await this.cellphoneVerificationStore.store(verificationEntity);
     return this.createTokenPair({ userId: userEntity.id });
   }
 
@@ -120,7 +153,10 @@ export class AuthFacade {
       emailOrPhone,
     });
 
-    userEntity.isValidPassword(password);
+    if (!userEntity.isValidPassword(password))
+      throw new UnauthorizedException(
+        UnauthorizedExceptionMessage.passwordInvalid,
+      );
 
     return this.createTokenPair({ userId: userEntity.id });
   }

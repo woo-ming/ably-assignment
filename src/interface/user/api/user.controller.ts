@@ -38,6 +38,7 @@ export class UserController {
     const user = await this.userFacade.modifyUserPassword({
       id: userId,
       password: dto.password,
+      verificationId: dto.verificationId,
     });
     return CommonResponse.success(new UserMainDto(user));
   }
