@@ -42,13 +42,14 @@ class UserMemoryRepository implements UserStore, UserReader {
 }
 
 const persistenceProviders: Provider[] = [
+  UserMemoryRepository,
   {
     provide: UserDITokens.UserStore,
-    useClass: UserMemoryRepository,
+    useExisting: UserMemoryRepository,
   },
   {
     provide: UserDITokens.UserReader,
-    useClass: UserMemoryRepository,
+    useExisting: UserMemoryRepository,
   },
 ];
 
@@ -111,10 +112,15 @@ describe('UserServiceImpl', () => {
     const user = await service.registerUser(command);
 
     // when
-    const result = await service.retrieveUserByEmailOrPhone({
+    const result1 = await service.retrieveUserByEmailOrPhone({
       emailOrPhone: user.email,
     });
+
+    const result2 = await service.retrieveUserByEmailOrPhone({
+      emailOrPhone: user.phone,
+    });
     // then
-    expect(result.id).toBe(user.id);
+    expect(result1.id).toBe(user.id);
+    expect(result2.id).toBe(user.id);
   });
 });

@@ -5,8 +5,16 @@ import { EntityNotFoundExceptionMessage } from 'src/domain/user/exception/error-
 import { DataSource, Repository } from 'typeorm';
 import { CellphoneVerificationEntity } from '../../entity/cellphone-verification.entity';
 
+export interface CellphoneVerificationReader {
+  retrieveCellphoneVerificationById(criteria: {
+    id: number;
+  }): Promise<CellphoneVerificationEntity>;
+}
+
 @Injectable()
-export class CellphoneVerificationReader {
+export class CellphoneVerificationReaderImpl
+  implements CellphoneVerificationReader
+{
   private readonly repository: Repository<CellphoneVerificationEntity>;
 
   constructor(
@@ -18,17 +26,14 @@ export class CellphoneVerificationReader {
     );
   }
 
-  async retrieveCellphoneVerificationByIdAndCellphone({
+  async retrieveCellphoneVerificationById({
     id,
-    cellphone,
   }: {
     id: number;
-    cellphone: string;
   }): Promise<CellphoneVerificationEntity> {
     const cellphoneVerification = await this.repository.findOne({
       where: {
         id,
-        cellphone,
       },
     });
 

@@ -6,7 +6,6 @@ import {
   RegisterUserCommand,
 } from '../dto/user-command';
 import { UserEmailOrPhoneCriteria } from '../dto/user-criteria';
-import { UserMainInfo } from '../dto/user-info';
 import { EntityNotFoundExceptionMessage } from '../exception/error-message';
 import { EntityNotFoundException } from '../../../common/exception/exception';
 import { UserReader } from '../repository/user.reader';
@@ -14,11 +13,9 @@ import { UserStore } from '../repository/user.store';
 import { User } from '../entity/user';
 
 export interface UserService {
-  registerUser(command: RegisterUserCommand): Promise<UserMainInfo>;
-  modifyUser(command: ModifyUserPasswordCommand): Promise<UserMainInfo>;
-  retrieveUserByEmailOrPhone(
-    criteria: UserEmailOrPhoneCriteria,
-  ): Promise<UserMainInfo>;
+  registerUser(command: RegisterUserCommand): Promise<User>;
+  modifyUserPassword(command: ModifyUserPasswordCommand): Promise<User>;
+  retrieveUserByEmailOrPhone(criteria: UserEmailOrPhoneCriteria): Promise<User>;
 }
 
 export class UserServiceImpl implements UserService {
@@ -35,24 +32,22 @@ export class UserServiceImpl implements UserService {
     name,
     nickname,
     password,
-  }: RegisterUserCommand): Promise<UserMainInfo> {
-    return new UserMainInfo(
-      await this.userStore.store(
-        new User({
-          email,
-          phone,
-          name,
-          nickname,
-          password,
-        }),
-      ),
+  }: RegisterUserCommand): Promise<User> {
+    return await this.userStore.store(
+      new User({
+        email,
+        phone,
+        name,
+        nickname,
+        password,
+      }),
     );
   }
 
-  async modifyUser({
+  async modifyUserPassword({
     id,
     password,
-  }: ModifyUserPasswordCommand): Promise<UserMainInfo> {
+  }: ModifyUserPasswordCommand): Promise<User> {
     const user: User = await this.userReader
       .findById(id)
       .catch((error: Error) => {
@@ -67,14 +62,12 @@ export class UserServiceImpl implements UserService {
 
     user.updatePassword(password);
 
-    return new UserMainInfo(await this.userStore.store(user));
+    return await this.userStore.store(user);
   }
 
   async retrieveUserByEmailOrPhone({
     emailOrPhone,
-  }: UserEmailOrPhoneCriteria): Promise<UserMainInfo> {
-    return new UserMainInfo(
-      await this.userReader.findByEmailOrPhone(emailOrPhone),
-    );
+  }: UserEmailOrPhoneCriteria): Promise<User> {
+    return await this.userReader.findByEmailOrPhone(emailOrPhone);
   }
 }

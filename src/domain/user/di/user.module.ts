@@ -1,4 +1,5 @@
 import { Module, Provider } from '@nestjs/common';
+import { UserPersistenceModule } from 'src/infrastructure/persistence/di/user.module';
 import { UserServiceImpl } from '../service/user.service';
 
 const serviceProviders: Provider[] = [
@@ -9,7 +10,7 @@ const serviceProviders: Provider[] = [
 ];
 
 @Module({
-  imports: [],
+  imports: [UserPersistenceModule],
   providers: [...serviceProviders],
   exports: [...serviceProviders],
 })
