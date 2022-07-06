@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumber, IsPhoneNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, Matches } from 'class-validator';
+import { Regex } from 'src/common/constant/regex';
 import { CellphoneVerificationEntity } from 'src/infrastructure/persistence/entity/cellphone-verification.entity';
 
 export class CellphoneVerificationMainDto {
@@ -28,7 +29,7 @@ export class CellphoneVerificationMainDto {
 
 export class RegisterCellphoneVerificationDto {
   @ApiProperty()
-  @IsPhoneNumber()
+  @Matches(Regex.IsPhone)
   phone: string;
 }
 
@@ -43,7 +44,7 @@ export class VerifyCodeDto {
 
 export class SingUpDto {
   @ApiProperty()
-  @IsEmail()
+  @Matches(Regex.IsEmail)
   email: string;
   @ApiProperty()
   @IsString()
@@ -55,7 +56,7 @@ export class SingUpDto {
   @IsString()
   nickname: string;
   @ApiProperty()
-  @IsPhoneNumber()
+  @Matches(Regex.IsPhone)
   phone: string;
 }
 

@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 export enum Result {
   SUCCESS = 'SUCCESS',
@@ -36,7 +36,7 @@ export class CommonResponse<T> {
     this.data = data;
     this.statusCode = statusCode;
     this.message = message;
-    this.timestamp = dayjs().format('YYYY-MM-DD HH:mm:ss').toString();
+    this.timestamp = dayjs().toISOString();
   }
 
   static fail({

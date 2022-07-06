@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { CellphoneVerificationExceptionMessage } from 'src/common/constant/error-message';
 import { EntityNotFoundException } from 'src/common/exception/exception';
 import { UserDITokens } from 'src/domain/user/di/user-di-tokens';
@@ -139,6 +139,7 @@ export class AuthFacade {
 
   private createTokenPair({ userId }: JwtPayload): TokenPairDto {
     const payload = { userId };
+
     return {
       accessToken: this.jwtService.sign(payload, {
         ...this.configService.get('jwt').access,

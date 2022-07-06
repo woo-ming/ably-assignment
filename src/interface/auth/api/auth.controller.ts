@@ -11,10 +11,7 @@ import {
 
 @Controller('api/auth')
 export class AuthController {
-  constructor(
-    @Inject()
-    private readonly authFacade: AuthFacade,
-  ) {}
+  constructor(private readonly authFacade: AuthFacade) {}
 
   @Post('/sign-in')
   async signIn(@Body() dto: SingInDto): Promise<CommonResponse<TokenPairDto>> {
