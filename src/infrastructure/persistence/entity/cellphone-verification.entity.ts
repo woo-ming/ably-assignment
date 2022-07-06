@@ -30,8 +30,22 @@ export class CellphoneVerificationEntity {
     return dayjs(now).isAfter(dayjs(this.expiredAt));
   }
 
-  verify(): void {
+  verify(now: Date): void {
     this.verified = true;
-    this.verifiedAt = dayjs().toDate();
+    this.verifiedAt = now;
+  }
+
+  static of({
+    phone,
+    verificationCode,
+  }: {
+    phone: string;
+    verificationCode: string;
+  }): CellphoneVerificationEntity {
+    const entity = new CellphoneVerificationEntity();
+    entity.cellphone = phone;
+    entity.verificationCode = verificationCode;
+    entity.expiredAt = dayjs().add(3, 'minute').toDate();
+    return entity;
   }
 }

@@ -8,6 +8,7 @@ import type { RedisClientOptions } from 'redis';
 import cacheConfig from 'src/common/configuration/cache.config';
 import { UserPersistenceModule } from 'src/infrastructure/persistence/di/user.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -32,6 +33,16 @@ import { DataSource, DataSourceOptions } from 'typeorm';
       isGlobal: true,
       useFactory: async (configService: ConfigService) =>
         configService.get('cache') as RedisClientOptions,
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.moduleOptions.secret'),
+        issuer: configService.get<string>(
+          'jwt.moduleOptions.signOptions.issuer',
+        ),
+      }),
+      inject: [ConfigService],
     }),
     UserPersistenceModule,
   ],
