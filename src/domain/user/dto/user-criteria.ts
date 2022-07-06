@@ -5,3 +5,7 @@ export class UserMainCriteria {
 export class UserEmailOrPhoneCriteria {
   emailOrPhone: string;
 }
+
+export class UserCriteria {
+  id: string;
+}
