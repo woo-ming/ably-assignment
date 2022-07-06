@@ -41,6 +41,7 @@ export class AuthController {
   async signUp(@Body() dto: SingUpDto): Promise<CommonResponse<TokenPairDto>> {
     return CommonResponse.success(
       await this.authFacade.signUp({
+        verificationId: dto.verificationId,
         email: dto.email,
         password: dto.password,
         name: dto.name,
@@ -78,7 +79,7 @@ export class AuthController {
     return CommonResponse.success(
       new CellphoneVerificationMainDto(
         await this.authFacade.verifyCode({
-          requestId: dto.requestId,
+          verificationId: dto.verificationId,
           verificationCode: dto.verificationCode,
         }),
       ),

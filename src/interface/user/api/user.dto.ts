@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { User } from 'src/domain/user/entity/user';
 
 export class UserMainDto {
@@ -27,6 +27,9 @@ export class UserMainDto {
 }
 
 export class ModifyUserPasswordDto {
+  @ApiProperty()
+  @IsNumber()
+  verificationId: number;
   @ApiProperty()
   @IsString()
   password: string;

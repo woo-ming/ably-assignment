@@ -7,4 +7,5 @@ export class CellphoneVerificationExceptionMessage {
 export class UnauthorizedExceptionMessage {
   static expired = '토큰이 만료 되었어요';
   static invalid = '토큰이 유효하지 않아요';
+  static passwordInvalid = '비밀번호가 맞지 않아요';
 }

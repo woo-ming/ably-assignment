@@ -5,7 +5,7 @@ import { CellphoneVerificationEntity } from 'src/infrastructure/persistence/enti
 
 export class CellphoneVerificationMainDto {
   @ApiProperty()
-  requestId: number;
+  verificationId: number;
   @ApiProperty()
   cellphone: string;
   @ApiProperty()
@@ -18,7 +18,7 @@ export class CellphoneVerificationMainDto {
   expiredAt: Date;
 
   constructor(cellphoneVerification: CellphoneVerificationEntity) {
-    this.requestId = cellphoneVerification.id;
+    this.verificationId = cellphoneVerification.id;
     this.cellphone = cellphoneVerification.cellphone;
     this.verificationCode = cellphoneVerification.verificationCode;
     this.verified = cellphoneVerification.verified;
@@ -36,13 +36,16 @@ export class RegisterCellphoneVerificationDto {
 export class VerifyCodeDto {
   @ApiProperty()
   @IsNumber()
-  requestId: number;
+  verificationId: number;
   @ApiProperty()
   @IsString()
   verificationCode: string;
 }
 
 export class SingUpDto {
+  @ApiProperty()
+  @IsNumber()
+  verificationId: number;
   @ApiProperty()
   @Matches(Regex.IsEmail)
   email: string;

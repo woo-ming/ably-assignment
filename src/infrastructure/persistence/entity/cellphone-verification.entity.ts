@@ -21,6 +21,8 @@ export class CellphoneVerificationEntity {
   verifiedAt?: Date;
   @Column({ type: 'timestamp' })
   expiredAt: Date;
+  @Column({ default: false })
+  expired?: boolean;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()
@@ -28,6 +30,10 @@ export class CellphoneVerificationEntity {
 
   isExpired(now: Date): boolean {
     return dayjs(now).isAfter(dayjs(this.expiredAt));
+  }
+
+  expire(): void {
+    this.expired = true;
   }
 
   verify(now: Date): void {
