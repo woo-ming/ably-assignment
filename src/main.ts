@@ -1,6 +1,7 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { HttpExceptionFilter } from './common/exception/exception.filter';
 import { AppModule } from './di/app.module';
-import { Express } from 'express';
 
 declare global {
   namespace Express {
@@ -14,6 +15,9 @@ declare global {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(3000);
 }
 bootstrap();
