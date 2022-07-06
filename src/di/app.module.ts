@@ -1,4 +1,10 @@
-import { CacheModule, Module } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from 'src/interface/app/app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from 'src/common/configuration/env.validation';
@@ -6,14 +12,18 @@ import databaseConfig from 'src/common/configuration/database.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import type { RedisClientOptions } from 'redis';
 import cacheConfig from 'src/common/configuration/cache.config';
-import { UserPersistenceModule } from 'src/infrastructure/persistence/di/user.module';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthMiddleware } from 'src/common/middleware/auth.middleware';
+import { LoggerMiddleware } from 'src/common/middleware/logger.middleware';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import jwtConfig from 'src/common/configuration/jwt.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [databaseConfig, cacheConfig],
+      load: [databaseConfig, cacheConfig, jwtConfig],
       isGlobal: true,
       validate,
     }),
@@ -44,8 +54,17 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
-    UserPersistenceModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: '', method: RequestMethod.GET }, 'api/auth/(.*)')
+      .forRoutes('*');
+  }
+}

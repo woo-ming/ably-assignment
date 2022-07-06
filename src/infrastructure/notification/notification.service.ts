@@ -5,9 +5,13 @@ export interface Recipient {
   message: string;
 }
 
+export interface NotificationService {
+  sendSms(recipients: Recipient[]): Promise<boolean>;
+}
+
 @Injectable()
-export class NotificationService {
-  sendSms(recipients: Recipient[]): Promise<boolean> {
+export class NotificationServiceImpl implements NotificationService {
+  async sendSms(recipients: Recipient[]): Promise<boolean> {
     // Send SMS to recipients
 
     return Promise.resolve(true);

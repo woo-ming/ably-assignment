@@ -27,6 +27,26 @@ export class UserReaderImpl implements UserReader {
     return new User(user);
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder()
+      .where('email = :email', { email })
+      .getOne();
+
+    if (!user) throw new EntityNotFoundException();
+    return new User(user);
+  }
+
+  async findByPhone(phone: string): Promise<User> {
+    const user = await this.userRepository
+      .createQueryBuilder()
+      .where('phone = :phone', { phone })
+      .getOne();
+
+    if (!user) throw new EntityNotFoundException();
+    return new User(user);
+  }
+
   async findByEmailOrPhone(emailOrPhone: string): Promise<User> {
     const user = await this.userRepository
       .createQueryBuilder()

@@ -21,7 +21,7 @@ export class UserEntity {
   email: string;
   @Column({ length: 32, comment: '별명' })
   nickname: string;
-  @Column({ length: 32, comment: '비밀번호' })
+  @Column({ length: 256, comment: '비밀번호' })
   password: string;
   @CreateDateColumn()
   createdAt?: Date;

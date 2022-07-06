@@ -6,10 +6,7 @@ import { ModifyUserPasswordDto, UserMainDto } from './user.dto';
 
 @Controller('/api/users')
 export class UserController {
-  constructor(
-    @Inject()
-    private readonly userFacade: UserFacade,
-  ) {}
+  constructor(private readonly userFacade: UserFacade) {}
   @Get('/self')
   async retrieveUserByToken(
     @Req() request: Request,

@@ -5,6 +5,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { join } from 'path';
 
 const {
+  NODE_ENV,
   DATABASE_HOST,
   DATABASE_PORT,
   DATABASE_USERNAME,
@@ -29,6 +30,6 @@ export default registerAs('database', (): DataSourceOptions => {
     database: DATABASE_NAME,
     migrationsRun: true,
     synchronize: false,
-    logging: true,
+    logging: NODE_ENV === 'local' ? true : false,
   };
 });
