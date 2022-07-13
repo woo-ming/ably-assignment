@@ -1,4 +1,4 @@
-import { Injectable, Provider } from '@nestjs/common';
+import { Injectable, NotFoundException, Provider } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserDITokens } from '../di/user-di-tokens';
 import { UserReader } from '../repository/user.reader';
@@ -36,8 +36,22 @@ class UserMemoryRepository implements UserStore, UserReader {
     )[0];
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = this.users.filter((user) => user.email === email)[0];
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
+  async findByPhone(phone: string): Promise<User> {
+    const user = this.users.filter((user) => user.phone === phone)[0];
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
   async findById(id: string): Promise<User> {
-    return this.users.filter((user) => user.id === id)[0];
+    const user = this.users.filter((user) => user.id === id)[0];
+    if (!user) throw new NotFoundException();
+    return user;
   }
 }
 
